@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Spatial Data Management at the Environment Agency</title>
+
+		<meta name="description" content="Spatial Data Management at the Environment Agency">
+		<meta name="author" content="Jo Cook">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+		<link rel="stylesheet" href="css/custom.css">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+<section>
+    <h2>Spatial Data Management at the Environment Agency</h2>
+    <h3>A Technical Perspective</h3>
+    <p>Jo Cook | Astun Technology | @archaeogeek</p>
+    <img class="center" src="./images/logo.jpg" alt="Astun Logo">
+</section>
+<section>
+  This talk is on github so follow along at<br /> 
+  <a target="_blank" href="http://archaeogeek.github.io/EAA2015/index.html">http://archaeogeek.github.io/EAA2015/index.html</a>
+</section>
+<section>
+<h2>Who are Astun Technology?</h2>
+  <p>We're a geospatial consultancy, established in 2006, supplying enterprise geospatial solutions to a wide-range of customers, based on the open source geospatial stack.</p>
+  <p>Our customers include, but are not limited to, local and central government, emergency services, and transport management.</p>
+  <img class="center" src="./images/teamphoto_2.jpg" alt="Astun Team 2014">
+</section>
+<section>
+<h2>Project Background</h2>
+  In 2013 the Environment Agency made a strategic decision to improve and streamline metadata management within their agency, to meet internal business requirements and publishing to data.gov.uk, ensuring compliance with INSPIRE and UK Gemini.
+</section>
+<section>
+<h2>Astun's Involvement</h2>
+	<p>Astun won the tender to provide this service, began work in 2014 and completed the project in 2015(*)</p>
+	<p class="fragment">(*) We are now providing ongoing support to the Environment Agency, as well as working on additional phases of work and enhancements to the service</p>
+</section>
+<section>
+<h2>Requirements</h2>
+<p>The EA had a set of functional and non-functional requirements that this system needed to meet from the start (*):</p>
+<ul>
+	<li class="fragment">INSPIRE/Gemini 2.2 compliance</li>
+	<li class="fragment">Spatial and non-spatial records</li>
+	<li class="fragment">Schematron-based metadata validation</li>
+	<li class="fragment">Browser-based and externally hosted</li>
+	<li class="fragment">Capable of handling 14,000 records and 150 concurrent users</li>
+	<li class="fragment">Strict security</li>
+</ul>
+<p class="fragment">(*) These requirements have evolved and been added to throughout the project</p>
+</section>
+<section>
+<h2>The Infrastructure and Software</h2>
+  <p>The basic platform comprises the Geonetwork metadata catalogue, backed by the PostgreSQL database server, with PostGIS and Auditing extensions installed</p>
+  <p>These are installed on a set of Amazon Web Servers (AWS and RDS), with backups in different availability zones, IP restricted access, separate development servers and so on.</p>
+</section>
+<section>
+  <p>The use of the PostgreSQL Audit plugin means we can track changes made to both metadata records and the catalog configuration (users, groups, metadata categories etc) and roll back individual changes as necessary, recovering accidentally deleted or corrupted records, and tracking which user did what</p>
+</section>
+<section>
+  <img class="center" src="./images/conceptual_v1.png" alt="Conceptual Architecture v1">
+</section>
+<section>
+<img class="center" src="./images/eageonetwork_restyled.png" alt="Geonetwork restyled">
+</section>
+<section>
+<h2>System Enhancements</h2>
+</section>
+<section>
+<p>&ldquo;Can we record additional metadata elements that are not part of INSPIRE/Gemini?&rdquo;</p>
+<p class="fragment">&ldquo;Yes, but we'll need to build you a new metadata profile that extends UK Gemini&rdquo;</p>
+<p class="fragment">This became known as EAMP, and now allows custom validation rules for metadata, on top of what's required for UK Gemini</p>
+</section>
+<section>
+<p>&ldquo;Can we strip these elements, along with any personal details from metadata records before we publish them to data.gov.uk?&rdquo;</p>
+<p class="fragment">&ldquo;Yes, using XSL transformation scripts&rdquo;</p>
+<p class="fragment">This now prevents internal users even printing copies of metadata records with personal details in</p>
+</section>
+<section>
+<p>&ldquo;Can we only publish some metadata to data.gov.uk but allow internal staff to view all completed records?&rdquo;</p>
+<p class="fragment">&ldquo;Yes, using a second public-facing server&rdquo;</p>
+<p class="fragment">Records to be pubished to data.gov.uk are now pushed to a public server and anonymised, then served via CSW (catalog services for the web)</p>
+</section>
+<section>
+<p>&ldquo;Can we make changes to selected records in bulk without needing to download them all?&rdquo;</p>
+<p class="fragment">&ldquo;Yes, using python scripts and Geonetwork XML services&rdquo;</p>
+<p class="fragment">We now have scripts to do a number of bulk changes to the data, such as publication date changes, internal contact detail changes and so on</p>
+</section>
+<section>
+  <img class="center" src="./images/conceptual_v2.png" alt="Conceptual Architecture v2">
+</section>
+<section>
+<h2>Additional application to allow pushing from private to public server</h2>
+  <img class="center" src="./images/harvesting_application.png" alt="Harvesting Application">
+</section>
+<section>
+<h2>Project Expansion</h2>
+</section>
+<section>
+<h2>June 2015 statement by Liz Truss, Secretary of State for Environment, Food and Rural Affairs</h2>
+<blockquote>&ldquo;Defra has more broad, varied and rich data than any other government department...
+Over the next year (*) we will be making 8,000 datasets publicly available, in the biggest data giveaway that Britain has ever seen.
+Tech City people, developers, entrepreneurs, scientists, investors, NGOs, anyone with a great idea, will have full and open access.&rdquo;</blockquote>
+<p class="fragment">In other words, by June 2016</p>
+</section>
+<section>
+<p>With very short notice, the EA solution was expanded to take on board 7 other Defra agencies, and the work to meet the June deadline is on target</p>
+<p class="fragment">Phew</p>
+</section>
+<section>
+<p>So we spun up a second private Geonetwork server for the Defra bodies</p>
+<img class="center" src="./images/defra_restyled.png" alt="Geonetwork restyled">
+</section>
+<section>
+<p>Ending up with an architecture something like this</p>
+<img class="center" src="./images/conceptual_v3.png" alt="Conceptual Architecture v3">
+</section>
+<section>
+<h2>The Good, the Bad and the Ugly</h2>
+<img class="center" src="./images/thegood_bad_ugly.png" alt="Shameless Cliche">
+</section>
+<section>
+<h2>The Good</h2>
+<p>The client seemed to think it was a success!</p>
+<img class="center" src="./images/order_from_chaos.png" alt="Wendy's talk">
+</section>
+<section>
+<p>EA have already surpassed their OpenData release commitment</p>
+<img class="center" src="./images/opendefra.jpg" alt="OpenDefra target">
+</section>
+<section>
+<img class="center" src="./images/fistpump.jpg" alt="Yes">
+</section>
+<section>
+<p>We've contributed enhancements to both Geonetwork Code and Documentation</p>
+<p class="fragment">We've released all of our customised code and helper scripts on GitHub</p>
+<p class="fragment">We've even contributed to the improvement of data.gov.uk!</p>
+</section>
+<section>
+<h2>The Bad</h2>
+<p>We had to stick with an old version of Geonetwork as the EA were on Internet Explorer 9</p>
+<img class="center" src="./images/geonetwork2_ui.png" alt="Geonetwork 2 UI">
+</section>
+<section>
+<h3>Versus Geonetwork 3</h3>
+<img class="center" src="./images/geonetwork3_ui.png" alt="Geonetwork 3 UI">
+</section>
+<section>
+<h3>Certification</h3>
+<p>Government compliance certification meant we had to jump through fairly arcane hoops and add complexity to the system to get it certified</p>
+<p class="fragment">This was costly to implement, and not always appropriate for the solution we have provided, and exacerbated by working with out-sourced ICT providers</p>
+</section>
+<section>
+<h2>The <strike>Ugly</strike> Annoying or Worrying</h2>
+<p>Extending the system we built for the EA to include the other Defra bodies, at short notice, pushed the boundaries of how Geonetwork, and our additional code, is implemented</p>
+<p class="fragment">Upgrading the system to a later release of Geonetwork would mean we had to go through compliance testing again</p>
+<p class="fragment">Some of the coding decisions in Geonetwork core are ...interesting</p>
+</section>
+<section data-background="./images/spaghetti.jpg">
+<h2>This all leaves us with some technical debt and "interesting" work-arounds</h2>
+</section>
+<section>
+<p>People care about what gets published to data.gov.uk and will call you out for any mistakes/discrepancies</p>
+<img class="center" src="./images/owen.png" alt="Owen Boswarva">
+</section>
+<section data-background="./images/thefuture.jpg">
+<h2>The Future</h2>
+<ul>
+	<li class="fragment">Move to Geonetwork 3?</li>
+	<li class="fragment">Properly extend the architecture so that all Defra bodies have the same system as EA?</li>
+	<li class="fragment">Implement different metadata profiles such as Medin (for the Marine Management Organisation)?</li>
+	<li class="fragment">Integrate with external authentication mechanisms for user and password management?</li>
+</ul>
+</section>
+<section>
+<h2>Summing Up</h2>
+<p class="fragment">The Environment Agency took the strategic decision, and some would say risk, to go with an open source solution for their metadata management</p>
+<p class="fragment">EA and Astun collectively have made this project a success, and helped some of the other Defra bodies meet their open data publishing commitments</p>
+<p class="fragment">The flexibility of open source has allowed us to cope with changing requirements throughout the project, albeit with some technical debt</p>
+
+
+<section>Thanks for listening!<br />
+  <small class='nobreak'>@archaeogeek / Jo Cook / Astun Technology</small>
+</section>
+
+
+
+
+
+</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
