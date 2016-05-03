@@ -88,7 +88,16 @@
   <p>These are installed on a set of Amazon Web Servers (AWS and RDS), with backups in different availability zones, IP restricted access, separate development servers and so on.</p>
 </section>
 <section>
-  <p>The use of the PostgreSQL Audit plugin means we can track changes made to both metadata records and the catalog configuration (users, groups, metadata categories etc) and roll back individual changes as necessary, recovering accidentally deleted or corrupted records, and tracking which user did what</p>
+<h2>Why Geonetwork?</h2>
+<img class="center" src="./images/geonetwork3-logo.png" alt="Geonetwork">
+<p>It's the leading open source metadata catalogue tool, with full support for UK Gemini/INSPIRE, and a graphical user interface for viewing, creating and editing data.</p>
+<p class="fragment">It also contains a set of back-end services for working with the metadata programatically</p>
+</section>
+<section>
+<h2>Why PostgreSQL?</h2>
+	<p>We use PostgreSQL to store the metadata and catalogue configuration, and PostGIS to store the spatial indices for geographic searches</p>
+  	<p class="fragment">The use of the Audit extension means we can track changes made to both metadata records and the catalogue configuration (users, groups, metadata categories etc) and roll back individual changes as necessary, recovering accidentally deleted or corrupted records, and tracking which user did what</p>
+  	<p class="fragment">We can also take daily/weekly snapshots of the database for disaster recovery and deploying test/development servers, and use the PgAdmin3 graphical user interface to query the data</p>
 </section>
 <section>
   <img class="center" src="./images/conceptual_v1.png" alt="Conceptual Architecture v1">
@@ -162,12 +171,12 @@ Tech City people, developers, entrepreneurs, scientists, investors, NGOs, anyone
 <img class="center" src="./images/opendefra.jpg" alt="OpenDefra target">
 </section>
 <section>
-<img class="center" src="./images/fistpump.jpg" alt="Yes">
-</section>
-<section>
 <p>We've contributed enhancements to both Geonetwork Code and Documentation</p>
 <p class="fragment">We've released all of our customised code and helper scripts on GitHub</p>
 <p class="fragment">We've even contributed to the improvement of data.gov.uk!</p>
+</section>
+<section>
+<img class="center" src="./images/fistpump.jpg" alt="Yes">
 </section>
 <section>
 <h2>The Bad</h2>
